@@ -1,0 +1,1 @@
+Ecuaciones de proyyecion Web estabilizadas. El offset de los pixeles se calcula restando lla posicion de la matriz grafica respecto a la coordenada satelital para lograr la superposicion de los nodos Wi-Fi en el mapa.
