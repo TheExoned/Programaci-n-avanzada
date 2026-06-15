@@ -1,8 +1,4 @@
-# Integrante 4: Sebas - Redes Ofensivas (Deauth y Espejismo Cautivo)
 
-**Rol:** Especialista en Ataque Inalámbrico.
-
-**Visual en Pantalla:** Captura de código de arm_manual_espejismo() (el DNS Sinkhole) y el bloque de esp_wifi_80211_tx para la desautenticación.
 
 ## Guion
 
