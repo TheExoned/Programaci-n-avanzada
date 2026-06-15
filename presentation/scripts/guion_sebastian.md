@@ -1,6 +1,6 @@
 
 
-## Guion de sebastian - Redes Ofensivas
+## Guion de sebastian - Redes Ofensivas (Deauth y Espejismo Cautivo)
 
 Estuve a cargo del arsenal ofensivo del sistema. Desarrollé dos vectores principales. Primero, la inyección nativa de paquetes de desautenticación. Construí los frames hexadecimales en crudo para forzar la desconexión de clientes específicos, superando la limitación estándar del framework de Arduino.
 
