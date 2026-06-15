@@ -1,1 +1,4 @@
+Guion:
+Fui el encargado de la arquitectura base del firmware y la integración física del hardware en la LilyGo T-Display S3. El sistema opera bajo un RTOS de doble núcleo. Asigné el Core 0 exclusivamente a los motores de radiofrecuencia para evitar que el escaneo promiscuo colapsara la interfaz gráfica, la cual corre encapsulada en el Core 1 mediante LVGL.
 
+En cuanto a la telemetría, implementé un módulo u-blox M8N por hardware serial. Una de las dificultades más críticas fue el cuello de botella físico: la interferencia electromagnética (EMI) del ESP32 saturaba el amplificador de la antena cerámica, dejándola ciega. Lo resolví separando las cargas de procesamiento e inyectando un bypass táctico en el bus I2C para liberar ciclos de reloj y permitir la triangulación orbital pura. La lección principal de mi fase fue que el hardware es implacable; si no aíslas tus módulos de radio, tu software, por más optimizado que esté, simplemente no va a funcionar.
