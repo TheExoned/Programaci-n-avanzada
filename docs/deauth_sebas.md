@@ -1,1 +1,1 @@
-
+Vectores de ataque codificados. Se estructuraron los frames hexadecimales en crudo para la inyección de paquetes 802.11 (Deauth) y se levantó el sumidero DNS en el puerto 53 para la intercepción de credenciales.
