@@ -1,4 +1,4 @@
-Integrante 6: (Nombre del 6to Integrante) - Control Térmico e I2C
+Integrante : Daniel Alejandro Reyes Solis - Control Térmico e I2C.
 Rol: Encargado de Interfaz Hombre-Maquina y Energía.
 Visual en Pantalla: Toma enfocada a la placa mientras alguien toca la pantalla, o usando el slider de brillo. Captura del código de my_touchpad_read.
 Guion:
