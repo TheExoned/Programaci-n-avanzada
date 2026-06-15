@@ -1,4 +1,4 @@
-Integrante 2: Rio - Motor de Inteligencia de Señales (SIGINT)
+## Integrante 2: Rio - Motor de Inteligencia de Señales (SIGINT)
 
 "Mi responsabilidad fue el desarrollo del sniffer en modo promiscuo dentro del Core 0. Diseñé la función de callback que intercepta directamente las tramas 802.11 en bruto. El sistema no se conecta a las redes, simplemente extrae los Probe Requests de los teléfonos móviles y los Beacons de los routers en el aire.
 
