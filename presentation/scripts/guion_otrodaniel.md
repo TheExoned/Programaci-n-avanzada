@@ -1,5 +1,5 @@
 
-## Guion:
+## Guion de Daniel Reyes:
 
 Fui el responsable del control de bajo nivel del bus I2C para la pantalla táctil CST816 y la eficiencia térmica del hardware. Escribi el driver puente que extrae las coordenadas físicas del panel y las
 traduce a la máquina de estados de LVGL.
