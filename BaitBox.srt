@@ -1,0 +1,565 @@
+﻿1
+00:00:00,200 --> 00:00:04,000
+Mi nombre es Daniel Luna y fui el encargado
+de la arquitectura base del Firmware
+
+2
+00:00:05,049 --> 00:00:09,050
+y de dirigir a grandes
+rasgos el proyecto, tanto de la
+
+3
+00:00:09,062 --> 00:00:13,000
+idea general, como de
+introducir a varios compañeros,
+
+4
+00:00:13,250 --> 00:00:16,247
+a mis compañeros a varios
+conceptos, y de la integración
+
+5
+00:00:16,259 --> 00:00:19,000
+física del hardware en la
+LilyGo T-Display S3,
+
+6
+00:00:19,700 --> 00:00:23,000
+lo que incluye que yo hice la
+selección de todo, todo el hardware.
+
+7
+00:00:23,850 --> 00:00:28,000
+El sistema opera bajo
+un RTOS de doble núcleo.
+
+8
+00:00:28,500 --> 00:00:32,000
+Asigné el Core 0 exclusivamente
+a los motores de radiofrecuencia
+
+9
+00:00:32,001 --> 00:00:38,000
+para evitar que el escaneo promiscuo, entre
+otras cosas, colapsara la interfaz gráfica,
+
+10
+00:00:38,299 --> 00:00:42,000
+lo cual ocurre dentro del
+Core 1 mediante LVGL.
+
+11
+00:00:42,849 --> 00:00:48,000
+En cuanto a la telemetría, implementé
+un módulo Ublox M8N por hardware serial.
+
+12
+00:00:49,099 --> 00:00:51,909
+Una de las dificultades
+más destacables, por
+
+13
+00:00:51,921 --> 00:00:55,000
+decir lo menos, fue el
+cuello de botella físico.
+
+14
+00:00:55,099 --> 00:00:58,298
+La antena electromagnética
+del EP32 saturaba el
+
+15
+00:00:58,310 --> 00:01:02,000
+amplificador de la antena
+cerámica, daejando la ciega.
+
+16
+00:01:05,000 --> 00:01:08,752
+Lo resolví separando las
+cargas de procesamiento
+
+17
+00:01:08,764 --> 00:01:13,000
+inyectando un, digamos,
+"bypass" táctico en el bus I2C
+
+18
+00:01:13,149 --> 00:01:18,000
+para liberar ciclos de reloj y
+permitir la triangulación orbital pura.
+
+19
+00:01:18,001 --> 00:01:23,000
+La lección principal de mi fase
+fue que el hardware es muy sensible.
+
+20
+00:01:23,000 --> 00:01:26,356
+Si no aíslas tus módulos
+de radio, tu software, por
+
+21
+00:01:26,368 --> 00:01:30,000
+más optimizado que esté,
+simplemente no va a funcionar.
+
+22
+00:01:31,000 --> 00:01:37,257
+También estuve en el
+diseño e impresión de carcasas
+
+23
+00:01:37,258 --> 00:01:44,000
+prototipadas para cada
+nuevo módulo añadido.
+
+24
+00:01:46,000 --> 00:01:50,019
+Ok, yo me encargué mi parte,
+motor de inteligencia de señales, mi
+
+25
+00:01:50,031 --> 00:01:54,000
+responsabilidad fue el desarrollo
+del sniffer en modo promiscuo.
+
+26
+00:01:58,299 --> 00:02:02,137
+Dentro del Core 0 diseñé
+la función de callback que
+
+27
+00:02:02,149 --> 00:02:06,000
+intersecta directamente
+las tramas 802.11 en bruto.
+
+28
+00:02:08,000 --> 00:02:11,961
+El sistema se no se conecta de las
+redes, pues en este caso simplemente va a
+
+29
+00:02:11,973 --> 00:02:14,537
+extraer la prop request de
+los teléfonos móviles que se
+
+30
+00:02:14,587 --> 00:02:20,000
+encuentran en el área y los
+beacons de los routers en el aire.
+
+31
+00:02:25,000 --> 00:02:28,818
+Para el filtrado de adjetivos,
+programé un diccionario, en este caso
+
+32
+00:02:28,830 --> 00:02:33,000
+eurístico, con 96 firmas, completamente
+redes públicas, comunes en México.
+
+33
+00:02:40,136 --> 00:02:43,843
+El problema inicial fue el
+desbordamiento de memoria y el ESP32
+
+34
+00:02:43,868 --> 00:02:48,000
+colapsa al intentar procesar miles
+de paquetes de basura por segundo.
+
+35
+00:02:48,001 --> 00:02:51,000
+Estamos hablando de una
+pérdida completamente de datos.
+
+36
+00:02:51,001 --> 00:02:56,000
+La solución técnica fue aplicar una
+máscara de filtro completamente estricta.
+
+37
+00:03:01,000 --> 00:03:05,173
+(WIFI_PROMIS_FILTER _MASK_MGMT) cosas
+así para descartar el ruido y obviamente
+
+38
+00:03:05,185 --> 00:03:09,000
+almacenar solo las direcciones MAC
+viables en una matriz de RAM aislada.
+
+39
+00:03:12,000 --> 00:03:15,756
+Estamos hablando del espectro de 2.4 y se comprobó
+obviamente que el espectro de 2.
+
+40
+00:03:15,768 --> 00:03:20,000
+4 GHz es un caos y sin una dirección
+algorítmica precisa desde la antena
+
+41
+00:03:20,001 --> 00:03:27,000
+extraer la inteligencia
+útil que es imposible.
+
+42
+00:03:27,550 --> 00:03:31,000
+Pues yo le voy a explicar la
+parte que me tocó hacer mí.
+
+43
+00:03:31,350 --> 00:03:38,000
+Como tal, yo desarrollé el motor
+de renderizado cartográfico offline.
+
+44
+00:03:47,250 --> 00:03:50,977
+Dado que el funcionamiento principal del
+dispositivo opera en trabajo de campo sin conexión a
+
+45
+00:03:50,989 --> 00:03:55,010
+internet, utilizamos las imágenes satelitales
+exportadas desde SAS.PLANET hacia una tarjeta microSD,
+
+46
+00:03:55,300 --> 00:04:02,000
+una memoria, mediante
+el BUS FSI-FSPI a 4 MHz.
+
+47
+00:04:13,050 --> 00:04:17,057
+Como tal, mi código toma las coordenadas flotantes
+del GPS y utilizando la proyección matemática Web
+
+48
+00:04:17,069 --> 00:04:21,490
+Mercator, calcula el offset exacto en pixeles para dibujar
+la cuadrícula de mapas y sobreponer los marcadores.
+
+49
+00:04:32,050 --> 00:04:36,189
+El mayor desafío al realizar el motor de renderizado
+fue la superposición gráfica, el z-index,
+
+50
+00:04:36,201 --> 00:04:40,000
+ya que el marcador táctico del usuario borra
+físicamente los puntos de las redes WiFi.
+
+51
+00:04:40,200 --> 00:04:48,000
+Estas son eliminadas y detectadas
+debido al refresco de la pantalla IPS.
+
+52
+00:04:53,000 --> 00:04:56,988
+Esto se solucionó rediseñando
+los radios de la función con el
+
+53
+00:04:57,000 --> 00:05:01,000
+fillCircle, esto ayudó a
+generar un halo de alto contraste.
+
+54
+00:05:09,550 --> 00:05:13,557
+La lección aprendida a grandes rasgos es que las
+matemáticas de punto flotante en microcontroladores
+
+55
+00:05:13,569 --> 00:05:17,870
+exigen un control milimétrico y de este modo se vuelven
+muy útiles, para no desfasar el renderizado visual.
+
+56
+00:05:19,450 --> 00:05:23,073
+¿Qué tal, profe? Soy Sebastián
+del Mirón López y yo me dediqué a
+
+57
+00:05:23,085 --> 00:05:27,000
+hacer las redes ofensivas, lo que
+es la deauth y el espejismo cautivo.
+
+58
+00:05:34,150 --> 00:05:38,311
+Más que nada, el proyecto se enfocó en el desarrollo y en el análisis de
+técnicas ofensivas aplicadas a redes inalámbricas, lo que es específicamente
+
+59
+00:05:38,323 --> 00:05:42,076
+en la desautenticación de dispositivos y la implementación de un
+portal cautivo malicioso conocido como evil twin o espejismo cautivo.
+
+60
+00:05:42,100 --> 00:05:46,737
+En nuestro caso fue hacer algo
+parecido al portal de la RIUV.
+
+61
+00:05:46,749 --> 00:05:50,000
+Más que nada, yo lo
+dividí en dos vectores.
+
+62
+00:05:52,000 --> 00:05:55,884
+El primer componente fue la de desautenticación.
+Más que nada, este ataque consistía en enviar
+
+63
+00:05:55,896 --> 00:06:00,000
+paquetes especialmente diseñados para forzar la
+desconexión de dispositivos conectados a una red WiFi.
+
+64
+00:06:05,000 --> 00:06:09,087
+¿Cómo se logró o cómo logramos esto? Más que nada,
+trabajé directamente con un tramo de administración
+
+65
+00:06:09,099 --> 00:06:13,360
+que es un S802.11, usando paquetes de bajo nivel y
+invitándonos mediante funciones nativas para el SDP32.
+
+66
+00:06:16,000 --> 00:06:20,266
+Esto que nos permitió tener un mayor control sobre la
+comunicación inalámbrica y también comprender cómo un
+
+67
+00:06:20,278 --> 00:06:24,676
+atacante puede interrumpir la conexión de usuarios
+legítimos sin necesidad de conocer la contraseña de la red.
+
+68
+00:06:24,700 --> 00:06:27,927
+El segundo componente, o
+vector, fue el espejismo cautivo.
+
+69
+00:06:27,939 --> 00:06:32,000
+En este caso, más que nada, el
+dispositivo crea un punto de acceso falso.
+
+70
+00:06:32,500 --> 00:06:36,305
+¿Qué quiere decir esto? Que imita una red
+legítima. Como acabo de mencionar, nosotros
+
+71
+00:06:36,317 --> 00:06:40,000
+clonamos ahora sí, no clonamos, sino que
+hicimos ver parecidos la red de la RIUV.
+
+72
+00:06:40,400 --> 00:06:43,763
+Cuando usuario se conecta
+ahora sí, todo su tráfico es redirigido
+
+73
+00:06:43,775 --> 00:06:47,000
+mediante un DNS, hacia un portal
+web controlado por el atacante.
+
+74
+00:06:47,500 --> 00:06:50,758
+Entonces el objetivo es demostrar cómo
+es posible presentar páginas falsas que
+
+75
+00:06:50,770 --> 00:06:54,000
+aparentan ser legítimas para obtener
+información o interactuar en el usuario.
+
+76
+00:06:57,000 --> 00:07:01,064
+Nosotros, cuando presentamos el proyecto
+en las exposiciones, recreamos el sitio
+
+77
+00:07:01,076 --> 00:07:05,000
+web de la RIUV sin ser la misma, ya
+que obviamente por éticamente sería mal.
+
+78
+00:07:05,675 --> 00:07:09,000
+Y pues sí, mucha gente se metió pensando
+que era la RIUV original y pues esto.
+
+79
+00:07:12,000 --> 00:07:15,806
+Ahora sí, uno de los mayores retos que tuve,
+más que nada lo tuvimos, fue lograr que
+
+80
+00:07:15,818 --> 00:07:20,000
+teléfonos nuevos, que son Android o iPhone,
+mostraron automáticamente el portal que hicimos.
+
+81
+00:07:20,001 --> 00:07:22,429
+Para ello se analizaron los
+mecanismos que utilizaban en estos
+
+82
+00:07:22,441 --> 00:07:25,000
+sistemas cooperativos para
+verificar la conectividad de Internet.
+
+83
+00:07:25,001 --> 00:07:27,170
+Y también se adaptaron
+la respuesta del servidor
+
+84
+00:07:27,182 --> 00:07:29,000
+para activar el
+comportamiento esperado.
+
+85
+00:07:33,000 --> 00:07:37,093
+Bueno, mi rol en sí prácticamente abarco
+lo que es el escáner táctico de rango
+
+86
+00:07:37,105 --> 00:07:41,000
+corto o lo que también podemos llamar
+CQC y el almacenamiento persistente.
+
+87
+00:07:44,000 --> 00:07:47,988
+Bueno, yo lo que hice fue implementar un
+rastreador Bluetooth de baja energía o low
+
+88
+00:07:48,000 --> 00:07:52,000
+energy, como lo quieran decir, que filtra
+pasivamente las transmisiones en el aire.
+
+89
+00:07:52,001 --> 00:07:59,000
+Esto lo que hace es tratar de buscar una
+MAC específica asociado a un objetivo VIP.
+
+90
+00:07:59,300 --> 00:08:04,000
+En nuestras pruebas simplemente
+usamos un dispositivo de la marca Honor.
+
+91
+00:08:04,100 --> 00:08:06,853
+Bueno, esto simplemente
+es lo que alimenta el
+
+92
+00:08:06,865 --> 00:08:10,000
+indicador radial de
+proximidad de nuestra interfaz.
+
+93
+00:08:13,000 --> 00:08:16,988
+Así mismo y a la par, yo lo que hice
+fue programar el subsistema, ya que no
+
+94
+00:08:17,000 --> 00:08:21,000
+es un sistema como tal, es un subsistema
+de la caja fuerte de credenciales.
+
+95
+00:08:21,950 --> 00:08:25,299
+Ya que almacenar el botín
+en RAM era completamente
+
+96
+00:08:25,311 --> 00:08:28,000
+inútil si el dispositivo
+perdía energía.
+
+97
+00:08:33,000 --> 00:08:37,105
+Así que lo que yo hice fue integrar
+la librería Preferences para poder
+
+98
+00:08:37,117 --> 00:08:41,000
+escribir las contraseñas interceptadas
+directas en la memoria NVC.
+
+99
+00:08:49,000 --> 00:08:52,883
+También nos encontramos con varios problemas, como
+cuando nos topamos con bucles de reinicio que eran
+
+100
+00:08:52,895 --> 00:08:57,175
+demasiado severos por la corrupción de sectores de memoria
+al escribir demasiado rápido, pero demasiado rápido.
+
+101
+00:08:57,199 --> 00:09:01,000
+Esto simplemente lo solucionamos
+forzando un borrado térmico.
+
+102
+00:09:01,549 --> 00:09:05,262
+Esto lo hacíamos en el
+arranque, ya que si detectábamos
+
+103
+00:09:05,274 --> 00:09:09,000
+firmas corruptas, entonces
+hacíamos el borrado térmico.
+
+104
+00:09:14,000 --> 00:09:17,782
+Pero bueno, en sí es eso, y por último
+lo que aprendí es que la gestión de
+
+105
+00:09:17,794 --> 00:09:22,000
+memoria en sistemas embebidos simplemente
+no perdona errores, digamos, de punteros.
+
+106
+00:09:22,199 --> 00:09:36,757
+Fui el responsable de la integración y control de bajo nivel de la comunicación I2C
+entre el ESP32 y la pantalla táctil CST816. Mi trabajo consistió en desarrollar el
+
+107
+00:09:36,859 --> 00:09:47,679
+driver encargado de leer las coordenadas físicas detectadas por el panel táctico y
+convertirlas en eventos comprensibles para la interfaz gráfica desarrollada con el LVGL.
+
+108
+00:09:48,593 --> 00:09:57,761
+Durante las pruebas identifiqué un problema importante de
+sobrecalentamiento provocado por la retroiluminación que combina un filtro
+
+109
+00:09:58,073 --> 00:10:11,279
+anti rebote para las entradas táctiles y un protector de pantalla
+controlado directamente mediante PWM utilizando la función LED Write.
+
+110
+00:10:14,439 --> 00:10:22,247
+El funcionamiento es sencillo pero efectivo, después de 5 segundos
+sin interacción del usuario el sistema reduce automáticamente la
+
+111
+00:10:22,271 --> 00:10:25,938
+intensidad de la retroalimentación y muestra una pantalla oscura
+disminuyendo el consumo energético y la temperatura del dispositivo.
+
+112
+00:10:26,606 --> 00:10:31,941
+Cuando el usuario vuelve a tocar la pantalla la
+interfaz se reactiva de manera inmediata y uno de los
+
+113
+00:10:32,406 --> 00:10:38,380
+mayores desafíos fue la interacción entre el
+controlador táctil y los módulos de energía del ESP32.
+
